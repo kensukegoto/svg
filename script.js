@@ -2,7 +2,7 @@
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-  const treeButtons = document.getElementById("treeButtons");
+  const treeButtons = document.querySelectorAll("#treeButtons button");
   const outerRect = document.getElementById("outerRect");
   const terrain = document.getElementById("terrain");
   const MAX_WIDTH = +outerRect.getAttributeNS(null,"width");
@@ -18,23 +18,9 @@ document.addEventListener("DOMContentLoaded",()=>{
 
   treeGenerator.init({outerRect,terrain,MAX_WIDTH,MAX_HEIGHT,MIN_HEIGHT,pineElement,oakElement});
 
-  treeButtons.addEventListener("click",(e)=>{
-    switch(e.target.id){
-      case 'pineButton':
-        treeGenerator.createPines();
-        break;
-      case 'oakButton':
-        treeGenerator.createOaks();
-        break;
-      case 'removeButton':
-        treeGenerator.removeAllTrees();
-        break;
-  
-      default:
-        break;
-    }
-  });
-  
+  for(let prop of treeButtons){
+    prop.addEventListener("click",drawTrees);
+  }
 
   for(let prop of saveButtons){
     prop.addEventListener("click",saveImg);
@@ -44,9 +30,24 @@ document.addEventListener("DOMContentLoaded",()=>{
   }
 
   downloadPNGButton.addEventListener("click",saveImg);
-  
 
 });
+
+function drawTrees(){
+  switch(this.id){
+    case "pineButton":
+      treeGenerator.createPines();
+      break;
+    case "oakButton":
+      treeGenerator.createOaks();
+      break;
+    case "removeButton":
+      treeGenerator.removeAllTrees();
+      break;
+    default:
+      return;
+  }
+}
 
 function saveImg(e){
     const {format} =this.dataset;
@@ -195,11 +196,15 @@ const imageSaver = {
   },
 
   setDimentions(){
-    const svgCopy = this.svgData.cloneNode(true);
-    svgCopy.setAttributeNS(null,"width",this.width);
-    svgCopy.setAttributeNS(null,"height",this.height);
-    
-    return svgCopy.outerHTML;
+    if(this.format !== "png"){
+      return this.svgData.outerHTML;
+    } else {
+      const svgCopy = this.svgData.cloneNode(true);
+      svgCopy.setAttributeNS(null,"width",this.width);
+      svgCopy.setAttributeNS(null,"height",this.height);
+      return svgCopy.outerHTML;
+    }
+
   },
 
   parseImage(){
