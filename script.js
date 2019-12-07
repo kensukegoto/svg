@@ -1,8 +1,8 @@
 
-const treeButtons = document.getElementById("treeButtons");
 
 document.addEventListener("DOMContentLoaded",()=>{
 
+  const treeButtons = document.getElementById("treeButtons");
   const outerRect = document.getElementById("outerRect");
   const terrain = document.getElementById("terrain");
   const MAX_WIDTH = +outerRect.getAttributeNS(null,"width");
@@ -13,6 +13,35 @@ document.addEventListener("DOMContentLoaded",()=>{
   const oakElement = document.querySelector("#oak");
 
   treeGenerator.init({outerRect,terrain,MAX_WIDTH,MAX_HEIGHT,MIN_HEIGHT,pineElement,oakElement});
+
+  treeButtons.addEventListener("click",(e)=>{
+    switch(e.target.id){
+      case 'pineButton':
+        treeGenerator.createPines();
+        break;
+      case 'oakButton':
+        treeGenerator.createOaks();
+        break;
+      case 'removeButton':
+        treeGenerator.removeAllTrees();
+        break;
+  
+      default:
+        break;
+    }
+  });
+  
+  
+  
+  document.getElementById("save").addEventListener("click",function(e){
+    const {format} = e.target.dataset;
+    if(format){
+      const name = document.getElementById("fileName").value;
+      const svgData = document.getElementById("svg");
+  
+      imageSaver.save(name,format,svgData);
+    }
+  });
 
 });
 
@@ -127,37 +156,7 @@ const treeGenerator = {
   
 }
 
-treeButtons.addEventListener("click",(e)=>{
-  switch(e.target.id){
-    case 'pineButton':
-      treeGenerator.createPines();
-      break;
-    case 'oakButton':
-      treeGenerator.createOaks();
-      break;
-    case 'removeButton':
-      treeGenerator.removeAllTrees();
-      break;
 
-    default:
-      break;
-  }
-});
-
-
-
-
-
-document.getElementById("save").addEventListener("click",function(e){
-  const {format} = e.target.dataset;
-  if(format){
-    const name = document.getElementById("fileName").value;
-    const svgData = document.getElementById("svg");
-
-    imageSaver.save(name,format,svgData);
-  }
-  
-});
 
 const imageSaver = {
 

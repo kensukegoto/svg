@@ -1,3 +1,97 @@
-#terrain use {
-  /* transform: scale(0.8); */
+html{
+  box-sizing: border-box;
+}
+
+*,*::before,*::after{
+  box-sizing: inherit;
+}
+
+html,body{
+  margin: 0;
+  padding: 0;
+}
+
+main{
+  width: 80vw;
+  margin: 0 auto;
+}
+
+#svg{
+  width: inherit;
+  border: 5px solid #222;
+}
+
+#buttons{
+  display: flex;
+  justify-content: space-between;
+  flex-flow: row wrap;
+}
+
+#buttons button{
+  color: #fff;
+  background-color: #417cb8;
+  border: none;
+  height: 50px;
+  width: 150px;
+  font-size: 1.05em;
+}
+
+#buttons button:hover{
+  background-color: #346392;
+}
+
+#buttons button:focus{
+  outline: none;
+}
+
+#buttons button:active{
+  background-color: #27496d;
+  border: none;
+}
+
+#save{
+  display: flex;
+  align-items: center;
+}
+#save button{
+  margin-left: 2px;
+}
+#save input{
+  height: 40px;
+  width: 160px;
+  font-size: 1.2em;
+  outline: none;
+}
+
+@media screen and (max-width: 1170px){
+  #buttons{
+    justify-content: center;
+    flex-flow: column wrap;
+    align-items: center;
+  }
+  #buttons button{
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  #save {
+    flex-wrap: wrap;
+    width: 458px;
+    justify-content: space-between;
+  }
+  #save input{
+    width: inherit;
+  }
+  #save button{
+    margin-left: 0;
+  }
+}
+@media screen and (max-width: 575px){
+  #buttons button,#save {
+    width: 80vw;
+    margin: 5px 0px;
+  }
+  #save input{
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
 }
