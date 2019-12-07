@@ -37,7 +37,7 @@ const treeGenerator = {
   
       this.setSVGAttributes(newElement,{
         class:"generated-oak",
-        "data-yAxis":y + 100,
+        "data-yaxis":y + 100,
         x,y
       });
   
@@ -73,9 +73,9 @@ const treeGenerator = {
       const sign = Math.random() * 2 > 1 ? 1 : -1;
         
       this.setSVGAttributes(pineClone,{
-        d:`M${x} ${y},H${x + (sign * randomWidth)},L${x + (sign * randomWidth)/2} ${y - randomWidth * 2}`,
+        d:`M${x} ${y} H${x + (sign * randomWidth)} L${x + (sign * randomWidth)/2} ${y - randomWidth * 2} Z`,
         class:"generated-pine",
-        "data-yAxis":y
+        "data-yaxis":y
   
       })
       this.myTrees.push(pineClone);
@@ -115,8 +115,8 @@ const treeGenerator = {
 
   orderByYAxis(trees) {
     const sortedTrees = trees.sort((a,b)=>{
-      const ay = a.dataset.yAxis;
-      const by = b.dataset.yAxis;
+      const ay = a.dataset.yaxis;
+      const by = b.dataset.yaxis;
       if(ay > by) return 1;
       else if (ay < by) return -1;
       else return 0;
@@ -143,11 +143,6 @@ treeButtons.addEventListener("click",(e)=>{
       break;
   }
 });
-
-
-
-
-
 
 
 
