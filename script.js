@@ -12,6 +12,10 @@ document.addEventListener("DOMContentLoaded",()=>{
   const pineElement = document.querySelector("#pine path");
   const oakElement = document.querySelector("#oak");
 
+  const saveButtons = document.querySelectorAll("#save button");
+  const modalButtons = document.querySelectorAll("#modal-inside button");
+  const downloadPNGButton = document.getElementById("download-png");
+
   treeGenerator.init({outerRect,terrain,MAX_WIDTH,MAX_HEIGHT,MIN_HEIGHT,pineElement,oakElement});
 
   treeButtons.addEventListener("click",(e)=>{
@@ -31,19 +35,39 @@ document.addEventListener("DOMContentLoaded",()=>{
     }
   });
   
+
+  for(let prop of saveButtons){
+    prop.addEventListener("click",saveImg);
+  }
+  for(let prop of modalButtons){
+    prop.addEventListener("click",popModal);
+  }
+
+  downloadPNGButton.addEventListener("click",saveImg);
   
-  
-  document.getElementById("save").addEventListener("click",function(e){
-    const {format} = e.target.dataset;
-    if(format){
-      const name = document.getElementById("fileName").value;
-      const svgData = document.getElementById("svg");
-  
-      imageSaver.save(name,format,svgData);
-    }
-  });
 
 });
+
+function saveImg(e){
+    const {format} =this.dataset;
+    if(format === "prepng"){
+      popModal();
+    }else{
+      const name = document.getElementById("fileName").value;
+      const svgData = document.getElementById("svg");
+      const width = document.getElementById("png-width").value;
+      const height = document.getElementById("png-height").value;
+      imageSaver.save(name,format,svgData,width,height);
+    }
+
+}
+
+function popModal(){
+  const modal = document.getElementById("modal");
+  const modalOverlay = document.getElementById("modal-overlay");
+  modal.classList.toggle("closed");
+  modalOverlay.classList.toggle("closed");
+}
 
 const treeGenerator = {
 
@@ -160,19 +184,20 @@ const treeGenerator = {
 
 const imageSaver = {
 
-  save(name,format,svgData){
+  save(name,format,svgData,width,height){
 
     this.name = name;
     this.format = format;
     this.svgData = svgData;
+    this.width = width;
+    this.height = height;
     this.parseImage();
   },
 
   setDimentions(){
     const svgCopy = this.svgData.cloneNode(true);
-    const [,,width,height] = svgCopy.getAttributeNS(null,"viewBox").split(" ");
-    svgCopy.setAttributeNS(null,"width",width);
-    svgCopy.setAttributeNS(null,"height",height);
+    svgCopy.setAttributeNS(null,"width",this.width);
+    svgCopy.setAttributeNS(null,"height",this.height);
     
     return svgCopy.outerHTML;
   },
@@ -215,8 +240,8 @@ const imageSaver = {
       img.src = svgUrl;
       img.onload = (()=>{
         const canvas = document.createElement("canvas");
-        canvas.width = 1366;
-        canvas.height = 768;
+        canvas.width = this.width;
+        canvas.height = this.height;
         const context = canvas.getContext("2d");
         context.drawImage(img,0,0);
         const href = canvas.toDataURL("image/png");

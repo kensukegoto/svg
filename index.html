@@ -117,10 +117,22 @@
         <div id="save">
           <input type="text" id="fileName" placeholder="Enter file name" />
           <button data-format="svg">Download SVG</button>
-          <button data-format="png">Download PNG</button>
+          <button data-format="prepng">Download PNG</button>
         </div>
       </div>
     </main>
+    <div id="modal" class="modal closed">
+      <div id="modal-inside">
+        <span>
+          <input type="number" id="png-width" value="1366">
+          X
+          <input type="number" id="png-height" value="768">
+        </span>
+        <button id="download-png" data-format="png">Download</button>
+        <button id="cancel-modal">Cancel</button>
+      </div>
+    </div>
+    <div id="modal-overlay" class="closed"></div>
     <script src="./script.js"></script>
   </body>
 </html>
