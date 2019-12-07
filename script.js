@@ -152,7 +152,7 @@ document.getElementById("save").addEventListener("click",function(e){
   const {format} = e.target.dataset;
   if(format){
     const name = document.getElementById("fileName").value;
-    const svgData = document.getElementById("svg").outerHTML;
+    const svgData = document.getElementById("svg");
 
     imageSaver.save(name,format,svgData);
   }
@@ -169,11 +169,21 @@ const imageSaver = {
     this.parseImage();
   },
 
+  setDimentions(){
+    const svgCopy = this.svgData.cloneNode(true);
+    const [,,width,height] = svgCopy.getAttributeNS(null,"viewBox").split(" ");
+    svgCopy.setAttributeNS(null,"width",width);
+    svgCopy.setAttributeNS(null,"height",height);
+    
+    return svgCopy.outerHTML;
+  },
+
   parseImage(){
 
     if(this.name.length < 1) this.name = "unnamed";
 
-    const svgBlob = new Blob([this.svgData],{type:"image/svg+xml"});
+    const sizedSVG = this.setDimentions();
+    const svgBlob = new Blob([sizedSVG],{type:"image/svg+xml"});
     const svgUrl = URL.createObjectURL(svgBlob);
 
     if(this.format === "png"){
