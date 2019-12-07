@@ -116,55 +116,87 @@ function removeAllTrees() {
 
 }
 
-document.getElementById("save").addEventListener("click",saveImage);
-
-function saveImage(e) {
-  const { format } = e.target.dataset;
+document.getElementById("save").addEventListener("click",function(e){
+  const {format} = e.target.dataset;
   if(format){
+    const name = document.getElementById("fileName").value;
     const svgData = document.getElementById("svg").outerHTML;
-    let name = document.getElementById("fileName").value;
-    if(name.length < 1) name = "unnamed";
-    const svgBlob = new Blob([svgData],{type:"image/svg+xml;charset=utf-8"});
+
+    imageSaver.init(name,format,svgData);
+  }
+  
+});
+
+const imageSaver = {
+
+  init(name,format,svgData){
+
+    this.name = name;
+    this.format = format;
+    this.svgData = svgData;
+    this.saveImage();
+  },
+
+  saveImage(){
+
+    if(this.name.length < 1) this.name = "unnamed";
+
+    const svgBlob = new Blob([this.svgData],{type:"image/svg+xml;charset=utf-8"});
     const svgUrl = URL.createObjectURL(svgBlob);
 
-    if(format === "png"){
-      convertAndDonwloadPNG(name,svgUrl,format);
+    if(this.format === "png"){
+      this.convertToPNG(svgUrl)
+        .then(href=>{
+          this.downloadImg(href)
+        })
     } else {
-      downloadImg(name,format,svgUrl);
+      this.downloadImg(svgUrl);
     }
-  }
+  },
 
+  downloadImg(href){
+    const downloadLink = document.createElement("a");
+    downloadLink.href = href;
+    downloadLink.download = `${this.name}.${this.format}`;
+    downloadLink.onclick = function(e) { // アロー関数だと this がImageSaverになる
+      setTimeout(()=>{
+        URL.revokeObjectURL(this.href);
+      },1500)
+    }
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  },
+
+  convertToPNG(svgUrl){
+    return new Promise((resolve,reject)=>{
+      const img = new Image();
+      img.src = svgUrl;
+      img.onload = (()=>{
+        const canvas = document.createElement("canvas");
+        canvas.width = 1366;
+        canvas.height = 768;
+        const context = canvas.getContext("2d");
+        context.drawImage(img,0,0);
+        const href = canvas.toDataURL("image/png");
+        resolve(href);
+      })
+    });
+  }
 }
+
+
 
 function downloadImg(name,type,href){
 
-  const downloadLink = document.createElement("a");
-  downloadLink.href = href;
-  downloadLink.download = `${name}.${type}`;
-  downloadLink.onclick = e => {
-    setTimeout(()=>{
-      URL.revokeObjectURL(this.href);
-      console.log("Revoked object URL")
-    },1500)
-  }
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
-  document.body.removeChild(downloadLink);
+
 
 }
 
 
-function convertAndDonwloadPNG(name,svgUrl,format){
+function convertToPNG(svgUrl){
 
-  const img = new Image();
-  img.src = svgUrl;
-  img.onload = (()=>{
-    const canvas = document.createElement("canvas");
-    canvas.width = 1366;
-    canvas.height = 768;
-    const context = canvas.getContext("2d");
-    context.drawImage(img,0,0);
-    const href = canvas.toDataURL("image/png");
-    downloadImg(name,format,href);
-  })
+
+  
+
 }
