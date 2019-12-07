@@ -178,7 +178,7 @@ const imageSaver = {
 
     if(this.name.length < 1) this.name = "unnamed";
 
-    const svgBlob = new Blob([this.svgData],{type:"image/svg+xml;charset=utf-8"});
+    const svgBlob = new Blob([this.svgData],{type:"image/svg+xml"});
     const svgUrl = URL.createObjectURL(svgBlob);
 
     if(this.format === "png"){
